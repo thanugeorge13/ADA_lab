@@ -1,59 +1,53 @@
-#include<stdio.h>
-#include<stdlib.h>
-void swap(int* a,int* b)
-{
-    int temp=*a;
-    *a=*b;
-    *b=temp;
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 100
+#define INF 9999
+int parent[MAX];
+int find(int i) {
+while (parent[i] != i)
+i = parent[i];
+return i;
 }
-int partition(int arr[],int low,int high)
-{
-    int p=arr[low];
-    int i=low;
-    int j=high;
-    while(i<j)
-    {
-        while(arr[i]<=p && i<=high-1)
-        {
-            i++;
-        }
-        while(arr[j]>p && j>=low+1)
-        {
-            j--;
-        }
-        if(i<j)
-        {
-            swap(&arr[i],&arr[j]);
-        }
-    }
-    swap(&arr[low],&arr[j]);
-    return j;
+void union_set(int i, int j) {
+int a = find(i);
+int b = find(j);
+parent[a] = b;
 }
-void quickSort(int arr[],int low,int high)
-{
-    if(low<high)
-    {
-        int pi=partition(arr,low,high);
-        quickSort(arr,low,pi-1);
-        quickSort(arr,pi+1,high);
+int main() {
+    int n;
+    int cost[MAX][MAX];
+    int i, j, a, b, u, v;
+    int ne = 0, mincost = 0, min;
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+    printf("Enter the adjacency matrix (0 if no edge):\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            scanf("%d", &cost[i][j]);
+        if (cost[i][j] == 0)
+            cost[i][j] = INF;
     }
-}
-int main()
-{
-    int num;
-    printf("Enter the number of elements: ");
-    scanf("%d",&num);
-    int arr[num];
-    printf("\nEnter the elements: ");
-    for(int i=0;i<num;i++)
-    {
-        scanf("%d",&arr[i]);
     }
-    quickSort(arr,0,num-1);
-    printf("\nSorted Array: ");
-    for(int i=0;i<num;i++)
-    {
-        printf("%d ",arr[i]);
+    for (i = 0; i < n; i++)
+        parent[i] = i;
+    printf("Edge \tWeight\n");
+    while (ne < n - 1) {
+        min = INF;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            if (find(i) != find(j) && cost[i][j] < min) {
+                min = cost[i][j];
+                a = u = i;
+                b = v = j;
+            }
+        }
     }
+    union_set(u, v);
+    printf("%d - %d\t%d\n", a, b, min);
+    mincost += min;
+    ne++;
+    }
+
+    printf("Minimum cost = %d\n", mincost);
     return 0;
 }
